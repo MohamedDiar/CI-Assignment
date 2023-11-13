@@ -22,7 +22,6 @@ def index():
     return render_template_string(open('templates/index.html').read())
 
 @app.route('/submit', methods=['POST'])
-@csrf.exempt
 def submit():
     name = request.form['name']
     age = request.form['age']
