@@ -11,7 +11,7 @@ def get_db_connection():
     server = os.environ.get('AZURE_SQL_SERVER')
     database = os.environ.get('AZURE_SQL_DATABASE')
     
-    connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+    connection_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
     return pyodbc.connect(connection_string)
 
 @app.route('/')
