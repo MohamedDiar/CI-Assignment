@@ -1,16 +1,15 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template_string, request
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template_string(open('templates/index.html').read())
 
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
     age = request.form['age']
-    return f"Hello, {name}. You are {age} years old."
+    return render_template_string(f'<h1>Hello {name}, you are {age} years old!</h1>')
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':app.run()
