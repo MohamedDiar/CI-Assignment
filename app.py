@@ -1,8 +1,12 @@
 from flask import Flask, render_template_string, request, render_template
+from flask_seasurf import SeaSurf  # For CSRF protection
+from flask_talisman import Talisman
 import os
 import pymssql
 
 app = Flask(__name__)
+csrf = SeaSurf(app)  
+Talisman(app)  
 
 # Database connection
 def get_db_connection():
@@ -15,10 +19,10 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    # You might want to use a separate HTML file for this form
     return render_template_string(open('templates/index.html').read())
 
 @app.route('/submit', methods=['POST'])
+@csrf.exempt
 def submit():
     name = request.form['name']
     age = request.form['age']
