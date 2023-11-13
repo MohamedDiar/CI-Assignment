@@ -26,9 +26,8 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     age = db.Column(db.Integer, nullable=False)
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
+
+db.create_all()
 
 @app.route('/')
 def index():
