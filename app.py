@@ -1,6 +1,6 @@
-from flask import Flask, render_template_string, request
+from flask import Flask, render_template_string, request, render_template
 import os
-import pyodbc
+import pymssql
 
 app = Flask(__name__)
 
@@ -11,8 +11,7 @@ def get_db_connection():
     server = os.environ.get('AZURE_SQL_SERVER')
     database = os.environ.get('AZURE_SQL_DATABASE')
     
-    connection_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
-    return pyodbc.connect(connection_string)
+    return pymssql.connect(server, username, password, database)    
 
 @app.route('/')
 def index():
@@ -23,28 +22,31 @@ def index():
 def submit():
     name = request.form['name']
     age = request.form['age']
+    print(f"Received name: {name}, age: {age}")
     
     # Insert into database
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO user (name, age) VALUES (?, ?)", (name, age))
+    cursor.execute("INSERT INTO user_info (name, age) VALUES (%s, %s)", (name, age))    
     conn.commit()
     cursor.close()
     conn.close()
 
-    return render_template_string(f'<h1>Hello {name}, you are {age} years old!</h1>')
+    return render_template_string(f'''
+            <h1>Hello {name}, you are {age} years old!</h1>
+            <button onclick="window.location.href='/users'">Show All Users</button>
+        ''')
 
 @app.route('/users')
 def users():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM user")
+    cursor.execute("SELECT * FROM user_info")
     users = cursor.fetchall()
     cursor.close()
     conn.close()
 
-    # Use render_template instead of render_template_string for external files
-    return render_template_string(open('templates/data.html').read(), users=users)
+    return render_template('data.html', users=users)
 
 if __name__ == '__main__':
     app.run()
