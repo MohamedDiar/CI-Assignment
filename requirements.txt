@@ -1,5 +1,5 @@
 Flask== 2.3.2
 Flask-SQLAlchemy== 3.1.1
 pymssql== 2.2.10
-flask_seasurf == 1.1.1
+Flask-SeaSurf @ https://github.com/maxcountryman/flask-seasurf/archive/refs/heads/main.tar.gz#sha256=64048ed1f01d6bf6ae369112eb70a21dcbbb6612eddd3a9069d8f49353c35400
 flask_talisman == 0.6.0
