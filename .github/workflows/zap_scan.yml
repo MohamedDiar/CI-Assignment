@@ -15,4 +15,4 @@ jobs:
       - name: OWASP ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.7.0
         with:
-          target: 'https://lucky-mittens-fly.cyclic.app'
+          target: 'https://tough-bell-bottoms-duck.cyclic.app'
