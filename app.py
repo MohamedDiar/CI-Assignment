@@ -1,50 +1,50 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-import urllib
+from flask import Flask, render_template_string, request
 import os
+import pyodbc
 
 app = Flask(__name__)
 
-# Environment variables (replace these with your GitHub secrets in a real deployment)
-username = os.environ.get('AZURE_SQL_USERNAME')
-password = os.environ.get('AZURE_SQL_PASSWORD')
-server = os.environ.get('AZURE_SQL_SERVER')
-database = os.environ.get('AZURE_SQL_DATABASE')
-
-params = urllib.parse.quote_plus(f'DRIVER={{ODBC Driver 18 for SQL Server}};'
-                                 f'SERVER={server};'
-                                 f'DATABASE={database};'
-                                 f'UID={username};'
-                                 f'PWD={password}')
-
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={params}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    age = db.Column(db.Integer, nullable=False)
-
-
-db.create_all()
+# Database connection
+def get_db_connection():
+    username = os.environ.get('AZURE_SQL_USERNAME')
+    password = os.environ.get('AZURE_SQL_PASSWORD')
+    server = os.environ.get('AZURE_SQL_SERVER')
+    database = os.environ.get('AZURE_SQL_DATABASE')
+    
+    connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+    return pyodbc.connect(connection_string)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # You might want to use a separate HTML file for this form
+    return render_template_string(open('templates/index.html').read())
 
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
     age = request.form['age']
-    new_user = User(name=name, age=age)
-    db.session.add(new_user)
-    db.session.commit()
-    return redirect(url_for('view_data'))
+    
+    # Insert into database
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO user (name, age) VALUES (?, ?)", (name, age))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
-@app.route('/data')
-def view_data():
-    users = User.query.all()
-    return render_template('data.html', users=users)
+    return render_template_string(f'<h1>Hello {name}, you are {age} years old!</h1>')
 
-if __name__ == '__main__':app.run()
+@app.route('/users')
+def users():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM user")
+    users = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # Use render_template instead of render_template_string for external files
+    return render_template_string(open('templates/data.html').read(), users=users)
+
+if __name__ == '__main__':
+    app.run()
