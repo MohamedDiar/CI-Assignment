@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template_string, request, render_template
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 import os
@@ -24,7 +24,7 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    return render_template('templates/index.html')
+    return render_template_string(open('templates/index.html').read())
 
 @app.route('/submit', methods=['POST'])
 def submit():
