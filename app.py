@@ -24,7 +24,7 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    return render_template_string(open('templates/index.html').read())
+    return render_template('templates/index.html')
 
 @app.route('/submit', methods=['POST'])
 def submit():
