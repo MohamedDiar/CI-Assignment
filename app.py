@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, request, render_template
+from flask import Flask, request, render_template
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 import os
