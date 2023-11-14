@@ -1,5 +1,5 @@
 from flask import Flask, render_template_string, request, render_template
-from flask_wtf.csrf import CSRFProtectfrom 
+from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 import os
 import pymssql
