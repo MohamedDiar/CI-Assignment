@@ -5,6 +5,7 @@
 </head>
 <body>
     <form action="/submit" method="post">
+        {{ csrf_token() }}  <!-- Include CSRF token here -->
         <label for="name">Name:</label>
         <input type="text" id="name" name="name"><br><br>
         <label for="age">Age:</label>

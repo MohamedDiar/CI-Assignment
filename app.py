@@ -1,8 +1,17 @@
 from flask import Flask, render_template_string, request, render_template
+from flask_wtf.csrf import CSRFProtect
+from flask_talisman import Talisman
 import os
 import pymssql
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'default_key')
+
+# CSRF Protection
+csrf = CSRFProtect(app) 
+
+# Content Security Policy and Clickjacking Protection
+Talisman(app, content_security_policy=None, frame_options='SAMEORIGIN')
 
 # Database connection
 def get_db_connection():
