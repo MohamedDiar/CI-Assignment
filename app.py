@@ -22,7 +22,7 @@ def get_db_connection():
 def index():
     return render_template_string(open('templates/index.html').read())
 
-@app.route('/' , methods=['POST'])
+@app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
     age = request.form['age']
