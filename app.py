@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, request, render_template
+from flask import Flask, render_template_string, request, render_template, escape
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 import os
@@ -28,8 +28,8 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    name = request.form['name']
-    age = request.form['age']
+    name = escape(request.form['name'])  # Apply escape here
+    age = escape(request.form['age'])    # Apply escape here
     print(f"Received name: {name}, age: {age}")
     
     # Insert into database
@@ -54,6 +54,7 @@ def users():
     cursor.close()
     conn.close()
 
+    # Note: Ensure that user data is also escaped properly when rendered in 'data.html'
     return render_template('data.html', users=users)
 
 if __name__ == '__main__':
