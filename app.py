@@ -30,8 +30,8 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    name = escape(request.form['name'])  
-    age = escape(request.form['age'])        
+    name = str(escape(request.form['name']))  
+    age = str(escape(request.form['age']))        
     print(f"Received name: {name}, age: {age}")
     
     # Insert into database
