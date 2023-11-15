@@ -1,8 +1,10 @@
-from flask import Flask, render_template_string, request, render_template, escape
+from flask import Flask, render_template_string, request, render_template
+from markupsafe import escape  
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 import os
 import pymssql
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'default_key')
@@ -28,8 +30,8 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    name = escape(request.form['name'])  # Apply escape here
-    age = escape(request.form['age'])    # Apply escape here
+    name = escape(request.form['name'])  
+    age = escape(request.form['age'])        
     print(f"Received name: {name}, age: {age}")
     
     # Insert into database
